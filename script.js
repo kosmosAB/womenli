@@ -505,13 +505,17 @@ function setupPatternGenerator() {
   
   const countInputs = document.querySelectorAll('input[name="p-count"]');
 
-  [wInput, hInput, sizeInput, sxInput, syInput, gapInput, sy1Input, sy2Input].forEach(inp => {
+  const blurInput = document.getElementById('p-blur');
+  const blurVal   = document.getElementById('p-blur-val');
+
+  [wInput, hInput, sizeInput, sxInput, syInput, gapInput, sy1Input, sy2Input, blurInput].forEach(inp => {
     inp.addEventListener('input', () => {
       sizeVal.innerText = sizeInput.value + '%';
       sxVal.innerText = sxInput.value + '%';
       syVal.innerText = syInput.value + '%';
       sy1Val.innerText = sy1Input.value;
       sy2Val.innerText = sy2Input.value;
+      blurVal.innerText = blurInput.value;
       
       let gt = "Medium";
       if(gapInput.value < -20) gt = "Tight / Overlap";
@@ -565,6 +569,7 @@ async function updateParametricPattern() {
   const gap = parseFloat(document.getElementById('p-gap').value) || 10;
   const shiftY1 = parseFloat(document.getElementById('p-shift-y1').value) || 0;
   const shiftY2 = parseFloat(document.getElementById('p-shift-y2').value) || 0;
+  const symbolBlur = parseFloat(document.getElementById('p-blur').value) || 0;
   const iconCount = document.querySelector('input[name="p-count"]:checked')?.value || "2";
   
   try {
@@ -584,39 +589,53 @@ async function updateParametricPattern() {
     const elementW = baseWidth * scaleX;
     
     let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" overflow="hidden">`;
+
+    // Blur filter uses userSpaceOnUse so stdDeviation = real screen pixels, unaffected by inner scale transforms
+    const blurFilterDef = symbolBlur > 0
+      ? `<filter id="symbol-blur" x="-50%" y="-50%" width="200%" height="200%" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+           <feGaussianBlur in="SourceGraphic" stdDeviation="${symbolBlur}"/>
+         </filter>`
+      : '';
+
     svgContent += `<defs>
                       <clipPath id="mask-bounds">
                           <rect width="${w}" height="${h}" />
                       </clipPath>
+                      ${blurFilterDef}
                    </defs>`;
     svgContent += `<rect width="100%" height="100%" fill="${pBgHex}"/>`;
-    
-    // Group all patterns inside the clip mask so it never exceeds boundaries
+
+    // Clip mask stops icons escaping the canvas
     svgContent += `<g clip-path="url(#mask-bounds)">`;
-    
+
+    // Blur wrapper sits OUTSIDE the scale transforms so stdDeviation maps to real pixels
+    const blurOpen  = symbolBlur > 0 ? `<g filter="url(#symbol-blur)">` : '';
+    const blurClose = symbolBlur > 0 ? `</g>` : '';
+
+    svgContent += blurOpen;
+
     if (iconCount === "1") {
-      // Just center exactly one icon
       const centerX = (w / 2) - (elementW / 2);
       const centerY = (h / 2) - (baseHeight * scaleY / 2) + shiftY1;
       svgContent += `<g transform="translate(${centerX}, ${centerY}) scale(${scaleX}, ${scaleY})">
                         <path d="${dString}" fill="${pFgHex}"/>
                      </g>`;
     } else {
-      // 2 Flipped Icons Side-by-Side
       const startX = (w / 2) - elementW - (gap * 3);
       const centerY = (h / 2) - (baseHeight * scaleY / 2) + shiftY1;
-      
       const rightX = (w / 2) + elementW + (gap * 3);
-      const rightY = (h / 2) + (baseHeight * scaleY / 2) + shiftY2;     
+      const rightY = (h / 2) + (baseHeight * scaleY / 2) + shiftY2;
 
       svgContent += `<g transform="translate(${startX}, ${centerY}) scale(${scaleX}, ${scaleY})">
                         <path d="${dString}" fill="${pFgHex}"/>
                      </g>`;
-                     
+
       svgContent += `<g transform="translate(${rightX}, ${rightY}) scale(${-scaleX}, ${-scaleY})">
                         <path d="${dString}" fill="${pFgHex}"/>
                      </g>`;
     }
+
+    svgContent += blurClose;
 
     svgContent += `</g></svg>`;
     

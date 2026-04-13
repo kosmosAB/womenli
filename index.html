@@ -137,8 +137,8 @@
 
           <!-- Stretched W Controls -->
           <div class="control-group" style="padding-top: 15px; border-top: 1px solid #EEE;">
-            <label>Overall Size: <span id="stretch-size-val">50%</span></label>
-            <input type="range" id="p-size" min="10" max="1000" value="50">
+            <label>Overall Size: <span id="stretch-size-val">200%</span></label>
+            <input type="range" id="p-size" min="10" max="1000" value="200">
           </div>
           <div class="control-group offset-group">
             <div style="display:flex; gap: 15px;">
@@ -157,12 +157,17 @@
             <input type="range" id="p-stretch-x" min="50" max="300" value="100">
           </div>
           <div class="control-group">
-            <label>Vertical Stretch: <span id="stretch-y-val">100%</span></label>
-            <input type="range" id="p-stretch-y" min="50" max="300" value="100">
+            <label>Vertical Stretch: <span id="stretch-y-val">150%</span></label>
+            <input type="range" id="p-stretch-y" min="50" max="300" value="150">
           </div>
           <div class="control-group">
-            <label>Gap Between Icons: <span id="stretch-gap-val">Medium</span></label>
-            <input type="range" id="p-gap" min="-100" max="100" value="10">
+            <label>Gap Between Icons: <span id="stretch-gap-val">Tight</span></label>
+            <input type="range" id="p-gap" min="-100" max="100" value="-15">
+          </div>
+
+          <div class="control-group" style="padding-top: 15px; border-top: 1px solid #EEE;">
+            <label>Symbol Blur: <span id="p-blur-val">0</span>px</label>
+            <input type="range" id="p-blur" min="0" max="30" value="0" step="0.5">
           </div>
 
           <div class="control-group size-controls" style="margin-top: 10px; padding-top: 15px; border-top: 1px solid #EEE;">
