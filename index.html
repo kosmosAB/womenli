@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Womenli | Brand Guidelines</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Fraunces:opsz,SOFT,wght@9..144,0..100,100..900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  
+  <header class="hero" id="hero-banner">
+    <div class="hero-content">
+      <div class="logo-wrapper">
+        <img src="elements/womenli-icon.svg" alt="Womenli Icon" class="main-icon">
+      </div>
+      <h1>Womenli Brand Guidelines</h1>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="section-header">
+        <h2>Typography System</h2>
+        <p>A mix of elegance and approachability.</p>
+      </div>
+      
+      <div class="typography-grid">
+        <div class="type-card fraunces">
+          <div class="type-header">
+            <h3>Primary Font</h3>
+            <span class="font-name">Fraunces</span>
+          </div>
+          <div class="type-preview sentence" id="fraunces-preview">Restoring balance and confidence.</div>
+          <div class="type-controls">
+            <input type="range" id="fraunces-slider" min="1" max="3" value="1" step="1">
+            <div class="slider-labels" id="fraunces-label">H3 / Subheading (Regular)</div>
+          </div>
+        </div>
+        
+        <div class="type-card bricolage">
+          <div class="type-header">
+            <h3>Secondary Font</h3>
+            <span class="font-name">Bricolage Grotesque</span>
+          </div>
+          <div class="type-preview sentence" id="bricolage-preview">A natural daily supplement that helps keep your intimate balance in check.</div>
+          <div class="type-controls">
+            <input type="range" id="bricolage-slider" min="1" max="3" value="1" step="1">
+            <div class="slider-labels" id="bricolage-label">Body Text (Regular)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Brand Color Palettes</h2>
+        <p>Core colors and distinct product-specific variations.</p>
+      </div>
+      <div id="static-palettes-container"></div>
+    </section>
+
+    <section class="section downloader-section">
+      <div class="section-header">
+        <h2>Brand Logo and Wordmark</h2>
+        <p>Select colours visually. The system will automatically restrict backgrounds to ensure high contrast.</p>
+      </div>
+      
+      <div class="generator-container">
+        <div class="generator-controls">
+          
+          <div class="control-group">
+            <label>1. Select Asset</label>
+            <div class="asset-toggle-group">
+              <button class="asset-toggle-btn active" data-asset="icon">Brand Icon</button>
+              <button class="asset-toggle-btn" data-asset="wordmark">Brand Wordmark</button>
+            </div>
+            <input type="hidden" id="asset-select" value="icon">
+          </div>
+          
+          <div class="control-group">
+            <label>2. Foreground Colour</label>
+            <div class="swatch-grid" id="fg-swatches"></div>
+          </div>
+
+          <div class="control-group">
+            <label>3. Background Colour (Auto-Filtered)</label>
+            <div class="swatch-grid" id="bg-swatches"></div>
+          </div>
+        </div>
+        
+        <div class="generator-sticky-panel">
+          <div class="generator-preview">
+            <div class="preview-box" id="preview-box">
+              <div class="loader">Loading asset...</div>
+            </div>
+          </div>
+          <button id="download-btn" class="btn primary" disabled style="width: 100%;">Download SVG</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section pattern-section">
+      <div class="section-header">
+        <h2>Brand Pattern Generator</h2>
+        <p>Dynamically generate the "Stretched W" brand pattern for backgrounds and campaigns.</p>
+      </div>
+      
+      <div class="generator-container">
+        <div class="generator-controls">
+          
+          <div class="control-group">
+            <label>1. Foreground Colour</label>
+            <div class="swatch-grid" id="p-fg-swatches"></div>
+          </div>
+
+          <div class="control-group">
+            <label>2. Background Colour</label>
+            <div class="swatch-grid" id="p-bg-swatches"></div>
+          </div>
+
+          <div class="control-group" style="padding-top: 15px; border-top: 1px solid #EEE;">
+            <label>Icon Count:</label>
+            <div style="display: flex; gap: 15px; margin-top: 8px;">
+              <label style="font-weight: normal; font-size: 0.95rem; display: flex; align-items: center; gap: 5px;">
+                <input type="radio" name="p-count" value="1"> 1 Icon
+              </label>
+              <label style="font-weight: normal; font-size: 0.95rem; display: flex; align-items: center; gap: 5px;">
+                <input type="radio" name="p-count" value="2" checked> 2 Icons (Dual-Lock)
+              </label>
+            </div>
+          </div>
+
+          <!-- Stretched W Controls -->
+          <div class="control-group" style="padding-top: 15px; border-top: 1px solid #EEE;">
+            <label>Overall Size: <span id="stretch-size-val">50%</span></label>
+            <input type="range" id="p-size" min="10" max="1000" value="50">
+          </div>
+          <div class="control-group offset-group">
+            <div style="display:flex; gap: 15px;">
+              <div style="flex:1;">
+                <label style="font-size: 0.85rem; font-weight: normal;">L-Icon Shift Y: <span id="shift-y1-val">0</span></label>
+                <input type="range" id="p-shift-y1" min="-200" max="200" value="0">
+              </div>
+              <div style="flex:1;">
+                <label style="font-size: 0.85rem; font-weight: normal;">R-Icon Shift Y: <span id="shift-y2-val">0</span></label>
+                <input type="range" id="p-shift-y2" min="-200" max="200" value="0">
+              </div>
+            </div>
+          </div>
+          <div class="control-group" style="padding-top: 5px;">
+            <label>Horizontal Stretch: <span id="stretch-x-val">100%</span></label>
+            <input type="range" id="p-stretch-x" min="50" max="300" value="100">
+          </div>
+          <div class="control-group">
+            <label>Vertical Stretch: <span id="stretch-y-val">100%</span></label>
+            <input type="range" id="p-stretch-y" min="50" max="300" value="100">
+          </div>
+          <div class="control-group">
+            <label>Gap Between Icons: <span id="stretch-gap-val">Medium</span></label>
+            <input type="range" id="p-gap" min="-100" max="100" value="10">
+          </div>
+
+          <div class="control-group size-controls" style="margin-top: 10px; padding-top: 15px; border-top: 1px solid #EEE;">
+            <div>
+              <label>Width (px)</label>
+              <input type="number" id="pattern-width" value="1200">
+            </div>
+            <div>
+              <label>Height (px)</label>
+              <input type="number" id="pattern-height" value="600">
+            </div>
+          </div>
+
+        </div>
+        
+        <div class="generator-sticky-panel">
+          <div class="generator-preview pattern-preview-box" id="pattern-preview">
+               <div class="preview-size-tag" style="background:none; color:inherit;">Calculating paths...</div>
+          </div>
+          <button id="download-pattern-btn" class="btn primary" style="width: 100%;">Download Pattern (SVG)</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Womenli. Internal Brand Document.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
