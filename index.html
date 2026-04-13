@@ -99,7 +99,11 @@
               <div class="loader">Loading asset...</div>
             </div>
           </div>
-          <button id="download-btn" class="btn primary" disabled style="width: 100%;">Download SVG</button>
+          <div class="download-group" style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+            <button id="download-btn" class="btn primary" disabled style="flex: 1; min-width: 120px;">Download SVG</button>
+            <button id="download-png-btn" class="btn secondary" disabled style="flex: 1; min-width: 120px;">Download PNG</button>
+            <button id="download-png-transparent-btn" class="btn secondary" disabled style="flex: 1; min-width: 120px;">No BG (PNG)</button>
+          </div>
         </div>
       </div>
     </section>
@@ -187,7 +191,11 @@
           <div class="generator-preview pattern-preview-box" id="pattern-preview">
                <div class="preview-size-tag" style="background:none; color:inherit;">Calculating paths...</div>
           </div>
-          <button id="download-pattern-btn" class="btn primary" style="width: 100%;">Download Pattern (SVG)</button>
+          <div class="download-group" style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+            <button id="download-pattern-btn" class="btn primary" style="flex: 1; min-width: 120px;">Pattern SVG</button>
+            <button id="download-pattern-png-btn" class="btn secondary" style="flex: 1; min-width: 120px;">Pattern PNG</button>
+            <button id="download-pattern-png-transparent-btn" class="btn secondary" style="flex: 1; min-width: 120px;">No BG (PNG)</button>
+          </div>
         </div>
       </div>
     </section>

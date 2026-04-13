@@ -391,11 +391,13 @@ function generateSvgDataUrl(svgElement) {
 
 async function updateAssetPreview() {
   const assetType = document.getElementById('asset-select').value;
-  const btn = document.getElementById('download-btn');
+  const svgBtn = document.getElementById('download-btn');
+  const pngBtn = document.getElementById('download-png-btn');
+  const transPngBtn = document.getElementById('download-png-transparent-btn');
   const previewBox = document.getElementById('preview-box');
   const container = document.querySelector('.generator-preview');
   
-  btn.disabled = true;
+  [svgBtn, pngBtn, transPngBtn].forEach(b => b.disabled = true);
   container.style.backgroundColor = currentBgHex;
   
   try {
@@ -405,29 +407,82 @@ async function updateAssetPreview() {
     
     previewBox.innerHTML = '';
     previewBox.appendChild(coloredSvg);
-    btn.disabled = false;
+    [svgBtn, pngBtn, transPngBtn].forEach(b => b.disabled = false);
   } catch (err) {
     console.error(err);
     previewBox.innerHTML = '<p>Error loading asset.</p>';
   }
 }
 
-function downloadSVG() {
-  const svgEl = document.querySelector('#preview-box svg');
-  if(!svgEl) return;
-  
-  const svgData = new XMLSerializer().serializeToString(svgEl);
-  const blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  
+function triggerDownload(url, filename) {
   const link = document.createElement("a");
   link.href = url;
-  const assetName = document.getElementById('asset-select').value;
-  link.download = `womenli-${assetName}-${currentFgHex.replace('#','')}-on-${currentBgHex.replace('#','')}.svg`;
+  link.download = filename;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 }
+
+function handleDownload(format, transparent) {
+  const svgEl = document.querySelector('#preview-box svg');
+  if(!svgEl) return;
+  const assetName = document.getElementById('asset-select').value;
+  const filename = `womenli-${assetName}-${currentFgHex.replace('#','')}-on-${currentBgHex.replace('#','')}`;
+  
+  exportSvgAsImage(svgEl, filename, format, transparent, currentBgHex);
+}
+
+function exportSvgAsImage(svgEl, filename, format, transparent, cssBgColor) {
+  const clone = svgEl.cloneNode(true);
+  
+  if (transparent) {
+    // Attempt to remove background rects common in pattern generator
+    const rects = clone.querySelectorAll('rect');
+    rects.forEach(r => {
+      if(r.getAttribute('width') === '100%') r.remove();
+    });
+  }
+
+  // Ensure dimensions are explicit
+  const w = parseFloat(clone.getAttribute('width')) || clone.viewBox?.baseVal?.width || 1200;
+  const h = parseFloat(clone.getAttribute('height')) || clone.viewBox?.baseVal?.height || 600;
+  clone.setAttribute('width', w);
+  clone.setAttribute('height', h);
+
+  const svgData = new XMLSerializer().serializeToString(clone);
+
+  if (format === 'svg') {
+    const blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    triggerDownload(URL.createObjectURL(blob), filename + '.svg');
+    return;
+  }
+
+  // PNG conversion
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+
+  // Fill CSS background color for icon/wordmark if not transparent
+  if (!transparent && cssBgColor) {
+    ctx.fillStyle = cssBgColor;
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  const img = new Image();
+  const b64 = btoa(unescape(encodeURIComponent(svgData)));
+  const url = `data:image/svg+xml;base64,${b64}`;
+
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0, w, h);
+    triggerDownload(canvas.toDataURL("image/png"), filename + '.png');
+  };
+  img.src = url;
+}
+
+document.getElementById('download-btn').addEventListener('click', () => handleDownload('svg', false));
+document.getElementById('download-png-btn').addEventListener('click', () => handleDownload('png', false));
+document.getElementById('download-png-transparent-btn').addEventListener('click', () => handleDownload('png', true));
 
 // ---------- 5. PARAMETRIC TWO-ICON PATTERN GENERATOR ---------- //
 let pFgHex = '#CF379D'; 
@@ -530,23 +585,21 @@ function setupPatternGenerator() {
     radio.addEventListener('change', updateParametricPattern);
   });
   
-  // Download Action
-  dlBtn.addEventListener('click', () => {
+  const dlSvgBtn = document.getElementById('download-pattern-btn');
+  const dlPngBtn = document.getElementById('download-pattern-png-btn');
+  const dlPngTransBtn = document.getElementById('download-pattern-png-transparent-btn');
+
+  function handlePatternDownload(format, transparent) {
     const preview = document.getElementById('pattern-preview');
     const svgEl = preview.querySelector('svg');
     if(!svgEl) return;
-    
-    const svgData = new XMLSerializer().serializeToString(svgEl);
-    const blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `womenli-two-icon-pattern-${wInput.value}x${hInput.value}.svg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  });
+    const filename = `womenli-pattern-${wInput.value}x${hInput.value}`;
+    exportSvgAsImage(svgEl, filename, format, transparent, null);
+  }
+
+  dlSvgBtn.addEventListener('click', () => handlePatternDownload('svg', false));
+  dlPngBtn.addEventListener('click', () => handlePatternDownload('png', false));
+  dlPngTransBtn.addEventListener('click', () => handlePatternDownload('png', true));
   
   updateParametricPattern(); // init
 }
